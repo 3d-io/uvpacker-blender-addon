@@ -503,7 +503,7 @@ classes = (UVPackProperty, UVPackerPanel, UVPackerPackButtonOperator, UVPackerSi
 UVPackerRotationButtonOperator, UVPackerFullRotationButtonOperator, UVPackerToolClearMapButtonOperator)
 
 def register():
-  if bpy.app.version < (2, 90, 0):
+  if bpy.app.version < (2, 83, 0):
     return
 
   from bpy.utils import register_class
