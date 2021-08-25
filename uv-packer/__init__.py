@@ -310,7 +310,7 @@ class UVPackerPanel(bpy.types.Panel):
     row.operator("uvpackeroperator.packbtn", text="Pack")
     row = layout.row(align=True)
     row.prop(packerProps, "uvp_combine")
-    
+
     row = layout.row()
     row.label(text="≡ UV Sheet:")
     row.label(text=packerProps.uvp_stats)
@@ -350,7 +350,7 @@ class UVPackerPanel(bpy.types.Panel):
 
     layout.separator()
     versionStr = "UV-Packer Version: %d.%d.%d" % bl_info["version"]
-    layout.label(text=versionStr, icon="SETTINGS") 
+    layout.label(text=versionStr, icon="SETTINGS")
     row = layout.row()
     row.scale_y = 1.5
     row.operator("wm.url_open", text="UV-Packer Homepage", icon="HOME").url = "https://www.uv-packer.com"
@@ -372,7 +372,7 @@ class UVPackerPackButtonOperator(Operator):
     self.coverage = 0.0
     packer_props = context.scene.UVPackerProps
     packer_props.dbg_msg = ""
-    
+
     if len(bpy.context.selected_objects) == 0:
       return {"FINISHED"}
 
@@ -391,12 +391,26 @@ class UVPackerPackButtonOperator(Operator):
     }
 
     packerDir = os.path.dirname(os.path.realpath(__file__))
-    packerExe = packerDir + "\\UV-Packer-Blender.exe"
+    packerCmd = []
+    packerPath = ""
+    if os.name == 'nt':
+      packerPath = packerDir + "\\UV-Packer-Blender.exe"
+      packerCmd = [packerPath]
+    else:
+      packerPath = packerDir + "/UV-Packer-Blender.exe"
+      packerCmd = ["wine", packerPath]
 
     try:
-      self.process = subprocess.Popen([packerExe], stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
+      assert os.path.exists(packerPath)
+      self.process = subprocess.Popen(packerCmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
+
     except:
-      msgStr = "UV-Packer executable not found. Please copy UV-Packer-Blender.exe to: " + packerDir
+      msgStr = ""
+      if os.name == 'nt':
+        msgStr = "UV-Packer executable not found. Please copy UV-Packer-Blender.exe to: " + packerDir
+      else:
+        msgStr = "UV-Packer executable not found or Wine is not installed. \nPlease copy UV-Packer-Blender.exe to: " + packerDir + ", and make sure Wine is installed and \"wine\" is in your PATH variable."
+
       self.update_status(msgStr, "ERROR")
       return {"FINISHED"}
 
