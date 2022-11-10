@@ -394,6 +394,7 @@ class UVPackerPackButtonOperator(Operator):
     packerDir = os.path.dirname(os.path.realpath(__file__))
     packerCmd = []
     packerPath = ""
+    packerEnv = os.environ.copy()
     match platform.system():
       case "Windows":
         packerPath = packerDir + "\\UV-Packer-Blender.exe"
@@ -404,13 +405,14 @@ class UVPackerPackButtonOperator(Operator):
       case "Linux":
         packerPath = packerDir + "/UV-Packer-Blender.exe"
         packerCmd = ["wine", packerPath]
+        packerEnv["WINEDEBUG"] = "-all"
       case _:
         self.update_status("UV-Packer is not supported on your platform", "ERROR")
 
     try:
       assert os.path.exists(packerPath)
-      self.process = subprocess.Popen(packerCmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
-        
+      self.process = subprocess.Popen(packerCmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=False, env=packerEnv)
+       
     except:
       msgStr = ""
       if platform.system() == 'Linux':
