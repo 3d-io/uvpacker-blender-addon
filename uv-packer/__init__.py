@@ -430,10 +430,11 @@ class UVPackerPackButtonOperator(Operator):
       "Selection": packer_props.uvp_selection_only
     }
 
-    packerDir = "/Applications/UV-Packer-Blender.app/Contents/MacOS/"
+    packerDir = os.path.dirname(os.path.realpath(__file__))
     packerExe = "UV-Packer-Blender"
+    if (platform.system() == 'Darwin'):
+      packerDir = "/Applications/UV-Packer-Blender.app/Contents/MacOS/"
     if (platform.system() == 'Windows'):
-      packerDir = os.path.dirname(os.path.realpath(__file__))
       packerExe = packerExe + ".exe"
 
     try:
