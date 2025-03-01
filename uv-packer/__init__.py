@@ -386,6 +386,11 @@ class UVPackerPanel(bpy.types.Panel):
     row = layout.row()
     row.scale_y = 1.5
     row.operator("wm.url_open", text="Documentation" , icon="QUESTION").url = "https://docs.3d-plugin.com/uv-packer/blender"
+    global platformSystem, packerDir
+    if platformSystem != 'Darwin':
+      row = layout.row()
+      row.scale_y = 1.5
+      row.operator("wm.path_open", text="Addon Directory" , icon="FILEBROWSER").filepath = packerDir
 
 class UVPackerPackButtonOperator(Operator):
   bl_idname = "uvpackeroperator.packbtn"
@@ -430,11 +435,7 @@ class UVPackerPackButtonOperator(Operator):
       "Selection": packer_props.uvp_selection_only
     }
 
-    packerDir = "/Applications/UV-Packer-Blender.app/Contents/MacOS/"
-    packerExe = "UV-Packer-Blender"
-    if (platform.system() == 'Windows'):
-      packerDir = os.path.dirname(os.path.realpath(__file__))
-      packerExe = packerExe + ".exe"
+    global packerDir, packerExe
 
     try:
       self.process = subprocess.Popen([packerDir + "/" + packerExe], stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
@@ -544,6 +545,16 @@ def register():
     registered_classes.append(cls)
 
   bpy.types.Scene.UVPackerProps = PointerProperty(type=UVPackProperty)
+
+  global platformSystem, packerDir, packerExe
+
+  platformSystem = platform.system()
+  packerDir = os.path.dirname(os.path.realpath(__file__))
+  packerExe = "UV-Packer-Blender"
+  if platformSystem == 'Darwin':
+    packerDir = "/Applications/UV-Packer-Blender.app/Contents/MacOS/"
+  elif platformSystem == 'Windows':
+    packerExe = packerExe + ".exe"
 
 def unregister():
   for cls in registered_classes:
