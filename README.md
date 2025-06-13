@@ -1,5 +1,11 @@
 # UV-Packer Addon for Blender
 
+> [!IMPORTANT]
+> This project is archived and will not receive any further updates.
+> All functionality of this addon (and more) is now available in **UnwrellaConnect for Blender**. You can find it here:
+>
+> https://github.com/3d-io/unwrella-connect-for-blender
+
 ## Installation
 **UV-Packer for Blender** consists of 2 components that need to be installed
 separately: The UV-Packer for Blender addon that provides the user interface in
